@@ -1,0 +1,23 @@
+# Ignore all .log files
+*.log
+
+# Ignore the entire build/ directory
+build/
+
+# Ignore specific file
+RDM_images/
+radarsimpy_env/
+RDM_saved_data/
+radarsimpy_linux_py3.11_cuda12/
+images/
+radarsimpy/
+radarsimnb/
+data/04_CRW2L_MC_V1_pos.csv
+data/04_CRW2L_MC_V1_pos.tsv
+data/04_CRW2L_MC_V1_tx1.tsv
+data/04_CRW2L_MC_V1_tx2.tsv
+data/04_CRW2L_MC_V1_tx3.tsv
+data/04_CRW2L_MC_V1_vel.tsv
+data/pose_vectors.csv
+Older_fmcw_versions/
+*.npy
