@@ -8,6 +8,9 @@ pos_filepath = 'data/04_CRW2L_MC_V1_pos.tsv'
 combined_filepath = 'data/04_CRW2L_MC_V1.tsv'
 yoga_pose_filepath = 'data/pose_vectors.csv'
 
+Pose_Labels = ['CRW2R','CRW2L', 'CT2CW', 'FF2MN', 'MNTRR', 'MNTRL']
+Participant_Labels = ['01','02', '03', '04', '09', '10', '12', '13', '14', '15', '16', '18', '22', '24']
+
 # Load the files
 vel_data = pd.read_csv(vel_filepath, delimiter='\t', skiprows=5, header=None)
 pos_data = pd.read_csv(pos_filepath, delimiter='\t', skiprows=5, header=None)
@@ -77,6 +80,6 @@ time_segments = [(8.47, 11.46, '_tx1'),
 
 for start_time, end_time, suffix in time_segments:
     segment_data = combined_data[(combined_data['Time'] >= start_time) & (combined_data['Time'] <= end_time)]
-    segment_filepath = combined_filepath.replace('.tsv', f'{suffix}.tsv')
-    segment_data.to_csv(segment_filepath, sep='\t', index=False)
+    segment_filepath = combined_filepath.rsplit('.', 1)[0] + f'{suffix}.npy'
+    np.save(segment_filepath, segment_data.to_numpy())  # Convert DataFrame to NumPy array before saving
     print(f"Segmented data saved to {segment_filepath}")
