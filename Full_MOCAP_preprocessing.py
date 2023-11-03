@@ -2,14 +2,15 @@ import pandas as pd
 import numpy as np
 import re
 import os
+import pprint
 
 Pose_Labels = ['CRW2R','CRW2L', 'CT2CW', 'FF2MN', 'MNTRR', 'MNTRL']
-Participant_Labels = ['01','02', '03', '04', '09', '10', '12', '13', '14', '15', '16', '18', '22', '24']
-Participant_Labels = ['01']
+Participant_Labels = [ '04', '05', '08' ,'09', '10', '12', '13', '14', '15', '16', '18', '22', '24']
 yoga_pose_filepath = 'data/pose_vectors.csv'
 yoga_pose_data = pd.read_csv(yoga_pose_filepath)
 print(yoga_pose_data)
 base_dir = '/media/dcope/DC_LaCie/Yoga_Study_MOCAP_Data'
+TIME_STEP = 0.01  # 100Hz
 
 for participant in Participant_Labels:
     participant_dir = os.path.join(base_dir, participant, 'tsv')
@@ -64,11 +65,30 @@ for participant in Participant_Labels:
 
                     # Check if the number of rows are the same for both datasets
                     if len(vel_data) != len(pos_data):
-                        raise ValueError("The number of rows in the velocity and position data are not the same.")
+                        diff = len(pos_data) - len(vel_data)
+                        print(f"Removing the first {diff} rows from pos_data to match vel_data length.")
+                        
+                        # Drop the first 'diff' rows from pos_data
+                        pos_data = pos_data.iloc[diff:]
+                        
+                        # Check again if the lengths match
+                        if len(vel_data) != len(pos_data):
+                            print(f"the velocity data is length {len(vel_data)}, where the position data is length {len(pos_data)}")
+                            raise ValueError("The number of rows in the velocity and position data are still not the same.")
+                        
+                        # Adjust the starting point of the time vector based on the number of rows removed
+                        adjusted_start_time = diff * 0.01  # Given 100Hz, time step is 0.01 seconds
 
-                    # Add a time vector based on the given frequency
-                    frequency = 100  # 100Hz
-                    time_vector = np.around(np.arange(0, len(vel_data) * 0.01, 0.01), 2)  # Given 100Hz, time step is 0.01 seconds
+                        # Create the time vector based on the length of vel_data and adjusted start time
+                        time_vector = np.around(np.arange(adjusted_start_time, adjusted_start_time + len(vel_data) * 0.01, TIME_STEP), 2)
+
+                        # Ensure the time_vector has the same length as vel_data
+                        if len(time_vector) != len(vel_data):
+                            time_vector = time_vector[:len(vel_data)]
+
+                    else:
+                        # Add a time vector based on the given frequency
+                        time_vector = np.around(np.arange(0, len(vel_data) * 0.01, TIME_STEP), 2)  # Given 100Hz, time step is 0.01 seconds
 
                     # Insert the time vector into the beginning of velocity dataframe
                     vel_data.insert(0, 'Time', time_vector)
