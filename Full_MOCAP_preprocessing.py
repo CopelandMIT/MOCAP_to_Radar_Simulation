@@ -5,7 +5,9 @@ import os
 import pprint
 
 Pose_Labels = ['CRW2R','CRW2L', 'CT2CW', 'FF2MN', 'MNTRR', 'MNTRL']
-Participant_Labels = [ '04', '05', '08' ,'09', '10', '12', '13', '14', '15', '16', '18', '22', '24']
+Pose_Labels = ['CRW2R']
+Participant_Labels = [ '01', '02', '03', '04', '05', '08' ,'09', '10', '12', '13', '14', '15', '16', '18', '22', '24']
+Participant_Labels = [ '02']
 yoga_pose_filepath = 'data/pose_vectors.csv'
 yoga_pose_data = pd.read_csv(yoga_pose_filepath)
 print(yoga_pose_data)
